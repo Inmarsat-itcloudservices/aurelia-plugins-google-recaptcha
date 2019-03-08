@@ -24,6 +24,7 @@ export class Recaptcha {
   // BINDABLE PROPERTIES
   @bindable badge = 'bottomright';
   @bindable callback;
+  @bindable expire;
   @bindable size = 'normal';
   @bindable theme = 'light';
   @bindable type = 'image';
@@ -45,7 +46,7 @@ export class Recaptcha {
   // PRIVATE METHODS
   async _initialize() {
     await this._scriptPromise;
-    this.widgetId = window.grecaptcha.render(this._element, { badge: this.badge, callback: this.callback, sitekey: this._config.get('siteKey'), size: this.size, theme: this.theme, type: this.type });
+    this.widgetId = window.grecaptcha.render(this._element, { badge: this.badge, callback: this.callback, 'expired-callback': this.expire, sitekey: this._config.get('siteKey'), size: this.size, theme: this.theme, type: this.type });
   }
 
   _loadApiScript() {
@@ -54,7 +55,7 @@ export class Recaptcha {
       const script = document.createElement('script');
       script.async = true;
       script.defer = true;
-      script.src = `https://www.google.com/recaptcha/api.js?hl=${this._config.get('hl')}&onload=aureliaPluginsGoogleRecaptchaOnLoad&render=explicit`;
+      script.src = `https://www.recaptcha.net/recaptcha/api.js?hl=${this._config.get('hl')}&onload=aureliaPluginsGoogleRecaptchaOnLoad&render=explicit`;
       script.type = 'text/javascript';
       document.head.appendChild(script);
       this._scriptPromise = new Promise((resolve, reject) => {
