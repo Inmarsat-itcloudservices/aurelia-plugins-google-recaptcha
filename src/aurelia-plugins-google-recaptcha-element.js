@@ -39,16 +39,12 @@ export class Recaptcha {
   }
 
   // LIFECYCLE HANDLERS
-  bind() {
-    this._initialize();
-  }
-
-  // PRIVATE METHODS
-  async _initialize() {
+  async bind() {
     await this._scriptPromise;
     this.widgetId = window.grecaptcha.render(this._element, { badge: this.badge, callback: this.callback, 'expired-callback': this.expire, sitekey: this._config.get('siteKey'), size: this.size, theme: this.theme, type: this.type });
   }
 
+  // PRIVATE METHODS
   _loadApiScript() {
     if (this._scriptPromise) return;
     if (window.grecaptcha === undefined) {
@@ -60,10 +56,10 @@ export class Recaptcha {
       document.head.appendChild(script);
       this._scriptPromise = new Promise((resolve, reject) => {
         window.aureliaPluginsGoogleRecaptchaOnLoad = () => resolve();
-        script.onerror = error => reject(error);
+        script.onerror = err => reject(err);
       });
-    } else if (window.grecaptcha) {
-      this._scriptPromise = new Promise(resolve => resolve());
     }
+    else if (window.grecaptcha)
+      this._scriptPromise = new Promise(resolve => resolve());
   }
 }
